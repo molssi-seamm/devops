@@ -37,15 +37,12 @@ jobs:
         conda list
     - name: Run linters
       shell: bash -l {0}
-      run: pwd
-      run: pwd
-      working-directory: ${{ inputs.src }}
-      run: ls -l ..
-      run: flake8 ${{ inputs.src}} tests
-      run: flake8 . ../tests
-      working-directory: ${{ inputs.src }}
-      run: black --check --diff . ../tests
-      working-directory: ${{ inputs.src }}
+      run: |
+        pwd
+        ls -l 
+        echo "Src dir is ${{ inputs.src }}"
+        flake8 ${{ inputs.src }} tests
+        black --check --diff ${{ inputs.src }} tests
     - name: Run tests
       shell: bash -l {0}
       run: |
