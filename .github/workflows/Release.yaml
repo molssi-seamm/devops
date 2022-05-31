@@ -7,6 +7,7 @@ on:
         description: The folder containing the source code
         type: string
         default: src
+    secrets: inherit
 
 jobs:
   lint:
