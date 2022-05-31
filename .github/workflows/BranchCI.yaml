@@ -38,6 +38,7 @@ jobs:
     - name: Run linters
       shell: bash -l {0}
       run: |
+        pwd
         black --check --diff . ../tests
         flake8 . ../tests
         working-directory: ${{ inputs.src }}
