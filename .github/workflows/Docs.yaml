@@ -1,19 +1,17 @@
-name: BranchCI
+name: Documentation
 
 on:
   workflow_call:
-    inputs:
-      src:
-        description: The folder containing the source code
-        type: string
-        default: src
 
 jobs:
-  light-ci:
-    name: Lint ubuntu-latest Py3.9
+  docs:
+    name: Docs ubuntu-latest Py3.9
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+      with:
+        # This gets all branches (1 = only current branch)
+        fetch-depth: 0
     - name: Additional info about the build
       shell: bash
       run: |
@@ -35,19 +33,9 @@ jobs:
       run: |
         python -m pip install . --no-deps
         conda list
-    - name: Run linters
+    - name: Build documentation
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash -l {0}
       run: |
-        black --check --diff ${{ inputs.src }} tests
-        flake8 ${{ inputs.src }} tests
-    - name: Run tests
-      shell: bash -l {0}
-      run: |
-        pytest -v --cov=${{ inputs.src }} --cov-report=xml --color=yes tests/
-    - name: CodeCov
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-ubuntu-latest-py3.9
-        
+        docs/buildDocs.sh
