@@ -10,7 +10,7 @@ on:
 
 jobs:
   light-ci:
-    name: Lint ubuntu-latest Py3.9
+    name: Lint & Docs ubuntu-latest Py3.9
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -50,4 +50,7 @@ jobs:
         file: ./coverage.xml
         flags: unittests
         name: codecov-ubuntu-latest-py3.9
-        
+    - name: Test documentation
+      shell: bash -l {0}
+      run: |
+        make html

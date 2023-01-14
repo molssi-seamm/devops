@@ -9,8 +9,8 @@ on:
         default: src
 
 jobs:
-  lint:
-    name: Lint ubuntu-latest Py3.9
+  lint-docs:
+    name: Lint & Docs ubuntu-latest Py3.9
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -40,6 +40,16 @@ jobs:
       run: |
         black --check --diff --extend-exclude '_version.py' ${{ inputs.src }} tests
         flake8 ${{ inputs.src }} tests
+    - name: Documentation
+      shell: bash -l {0}
+      run: |
+        make html
+    - name: Deploy documentation
+      uses: peaceiris/actions-gh-pages@v3
+      # if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/_build/html
 
   test:
     name: Test ${{ matrix.os }} Py${{ matrix.python-version }}
