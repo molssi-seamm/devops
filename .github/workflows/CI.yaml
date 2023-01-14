@@ -51,7 +51,7 @@ jobs:
   test:
     name: Test ${{ matrix.os }} Py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
-    needs: lint
+    needs: lint-docs
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest]
