@@ -13,7 +13,7 @@ jobs:
     name: Lint & Docs ubuntu-latest Py3.9
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Additional info about the build
       shell: bash
       run: |
@@ -21,7 +21,7 @@ jobs:
         df -h
         ulimit -a
     # More info on options: https://github.com/conda-incubator/setup-miniconda
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: 3.9
         environment-file: devtools/conda-envs/test_env.yaml
@@ -45,7 +45,7 @@ jobs:
       run: |
         pytest -v --cov=${{ inputs.src }} --cov-report=xml --color=yes tests/
     - name: CodeCov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
         flags: unittests
