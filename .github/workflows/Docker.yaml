@@ -30,13 +30,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ inputs.image }}
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: ./devtools/docker
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ inputs.image }}:latest
-            ghcr.io/${{ inputs.image }}:${{  github.ref_name }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
