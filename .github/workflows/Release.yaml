@@ -85,7 +85,7 @@ jobs:
       run: |
         pytest -v --cov=${{ inputs.src }} --cov-report=xml --color=yes tests/
     - name: CodeCov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
         flags: unittests
@@ -120,8 +120,8 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.test_pypi_password }}
-        repository_url: https://test.pypi.org/legacy/
-        skip_existing: true
+        repository-url: https://test.pypi.org/legacy/
+        skip-existing: true
     - name: Publish distribution 📦 to PyPI
       if: contains(github.ref, 'dev') == false && contains(github.ref, 'rc') == false
       uses: pypa/gh-action-pypi-publish@release/v1
