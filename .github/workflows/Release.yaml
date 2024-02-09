@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint-docs:
-    name: Lint & Docs ubuntu-latest Py3.11
+    name: Lint & Docs ubuntu-latest Py"3.11"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
     # More info on options: https://github.com/conda-incubator/setup-miniconda
     - uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: 3.11
+        python-version: "3.12"
         environment-file: devtools/conda-envs/test_env.yaml
         activate-environment: test
         auto-update-conda: false
@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest]
-        python-version: [3.11, 3.12]
+        python-version: ["3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
     - name: Additional info about the build
@@ -92,7 +92,7 @@ jobs:
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
 
   deploy:
-    name: PyPi ubuntu-latest Py3.11
+    name: PyPi ubuntu-latest Py"3.11"
     # Run only for tagged releases publishing development or release candidates
     # only to test.pypi, otherwise to both it and the main pypi.
     if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags')
@@ -100,10 +100,10 @@ jobs:
     needs: [lint-docs, test]
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
+    - name: Set up Python "3.11"
       uses: actions/setup-python@v5
       with:
-        python-version: 3.11
+        python-version: "3.12"
     - name: Install package
       shell: bash -l {0}
       run: |
