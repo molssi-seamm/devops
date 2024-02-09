@@ -7,6 +7,10 @@ on:
         description: The name of the image to build and push
         type: string
         required: true
+      description:
+        description: The description for the image
+        type: string
+        required: true
 
 jobs:
   build:
