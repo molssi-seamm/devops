@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint-docs:
-    name: Lint & Docs ubuntu-latest Py3.11
+    name: Lint & Docs ubuntu-latest Py3.12
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -92,7 +92,7 @@ jobs:
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
 
   deploy:
-    name: PyPi ubuntu-latest Py3.11
+    name: PyPi ubuntu-latest Py3.12
     # Run only for tagged releases publishing development or release candidates
     # only to test.pypi, otherwise to both it and the main pypi.
     if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags')
@@ -100,7 +100,7 @@ jobs:
     needs: [lint-docs, test]
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python "3.11"
+    - name: Set up Python "3.12"
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
