@@ -11,6 +11,11 @@ on:
         description: The description for the image
         type: string
         required: true
+      platforms:
+        description: The platform(s) to build the image for
+        type: string
+        required: false
+        default: linux/amd64,linux/arm64
 
 jobs:
   build:
@@ -48,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./devtools/docker
-          platforms: linux/amd64,linux/arm64
+          platforms: inputs.platforms
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
