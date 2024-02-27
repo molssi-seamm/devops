@@ -44,6 +44,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ inputs.image }}
+          tags: |
+            type=semver,pattern={{version}}
           annotations: |
             org.opencontainers.image.description=${{ inputs.description }}
           labels: |
