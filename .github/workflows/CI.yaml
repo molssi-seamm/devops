@@ -80,4 +80,4 @@ jobs:
     - name: Run tests
       shell: bash -l {0}
       run: |
-        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=term --color=yes tests/ $(MODULE)
+        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=term --color=yes tests/ ${{ inputs.src }}
