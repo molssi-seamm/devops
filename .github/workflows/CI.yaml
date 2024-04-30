@@ -80,10 +80,4 @@ jobs:
     - name: Run tests
       shell: bash -l {0}
       run: |
-        pytest -v --cov=${{ inputs.src }} --cov-report=xml --color=yes tests/
-    - name: CodeCov
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=term --color=yes tests/ $(MODULE)
