@@ -7,6 +7,11 @@ on:
         description: The folder containing the source code
         type: string
         required: true
+      test_dir:
+        description: The folder containing the tests
+        type: string
+        required: false
+        default: tests
 
 jobs:
   lint-docs:
@@ -38,8 +43,8 @@ jobs:
     - name: Run linters
       shell: bash -l {0}
       run: |
-        black --check --diff --extend-exclude '_version.py' ${{ inputs.src }} tests
-        flake8 ${{ inputs.src }} tests
+        black --check --diff --extend-exclude '_version.py' ${{ inputs.src }} ${{ inputs.test_dir }}
+        flake8 ${{ inputs.src }} ${{ inputs.test_dir }}
     - name: Documentation
       shell: bash -l {0}
       run: |
@@ -83,7 +88,7 @@ jobs:
     - name: Run tests
       shell: bash -l {0}
       run: |
-        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=xml --color=yes tests/ ${{ inputs.src }}
+        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=xml --color=yes ${{ inputs.test_dir }} ${{ inputs.src }}
     - name: CodeCov
       uses: codecov/codecov-action@v4
       with:
