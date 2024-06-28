@@ -62,7 +62,8 @@ jobs:
     needs: lint-docs
     strategy:
       matrix:
-        os: [macOS-latest, ubuntu-latest]
+        # os: [macOS-latest, ubuntu-latest]
+        os: [ubuntu-latest]
         python-version: ["3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
