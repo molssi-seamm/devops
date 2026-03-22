@@ -88,7 +88,7 @@ jobs:
     - name: Run tests
       shell: bash -l {0}
       run: |
-        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=xml --color=yes ${{ inputs.test_dir }} ${{ inputs.src }}
+        pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=xml --color=yes ${{ inputs.test_dir }}
     - name: CodeCov
       uses: codecov/codecov-action@v4
       with:
