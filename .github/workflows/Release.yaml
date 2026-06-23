@@ -18,7 +18,7 @@ jobs:
     name: Lint & Docs ubuntu-latest Py3.12
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Additional info about the build
       shell: bash
       run: |
@@ -26,7 +26,7 @@ jobs:
         df -h
         ulimit -a
     # More info on options: https://github.com/conda-incubator/setup-miniconda
-    - uses: conda-incubator/setup-miniconda@v3
+    - uses: conda-incubator/setup-miniconda@v4
       with:
         python-version: "3.12"
         environment-file: devtools/conda-envs/test_env.yaml
@@ -65,14 +65,14 @@ jobs:
         os: [macOS-latest, ubuntu-latest]
         python-version: ["3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Additional info about the build
       shell: bash
       run: |
         uname -a
         df -h
         ulimit -a
-    - uses: conda-incubator/setup-miniconda@v3
+    - uses: conda-incubator/setup-miniconda@v4
       with:
         python-version: ${{ matrix.python-version }}
         environment-file: devtools/conda-envs/test_env.yaml
@@ -90,9 +90,9 @@ jobs:
       run: |
         pytest -v --doctest-modules --cov=${{ inputs.src }} --cov-report=xml --color=yes ${{ inputs.test_dir }}
     - name: CodeCov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v6
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml
         flags: unittests
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
 
@@ -104,9 +104,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-docs, test]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Set up Python "3.12"
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.12"
     - name: Install package
