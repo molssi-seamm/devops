@@ -47,16 +47,22 @@ jobs:
         python -m pip install . --no-deps
         conda list
     # --- uv path -----------------------------------------------------------
-    - uses: astral-sh/setup-uv@v6
+    # The interpreter comes from actions/setup-python: its toolcache builds
+    # include tkinter on every runner, which the system and standalone
+    # Pythons do not. uv is only the installer.
+    - uses: actions/setup-python@v6
       if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
       with:
         python-version: "3.12"
+    - uses: astral-sh/setup-uv@v6
+      if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
+      with:
         enable-cache: true
     - name: Install package (uv)
       if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
       shell: bash
       run: |
-        uv venv --seed .venv
+        uv venv --seed --python "$(which python)" .venv
         echo "VIRTUAL_ENV=$PWD/.venv" >> "$GITHUB_ENV"
         echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
         uv pip install '.[test,docs]' pytest pytest-cov black flake8 codecov pydata-sphinx-theme sphinx-design sphinx-copybutton sphinxnotes-strike sphinx-rtd-theme rinohtype pystemmer pygments
@@ -114,16 +120,22 @@ jobs:
         python -m pip install . --no-deps
         conda list
     # --- uv path -----------------------------------------------------------
-    - uses: astral-sh/setup-uv@v6
+    # The interpreter comes from actions/setup-python: its toolcache builds
+    # include tkinter on every runner, which the system and standalone
+    # Pythons do not. uv is only the installer.
+    - uses: actions/setup-python@v6
       if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
       with:
         python-version: ${{ matrix.python-version }}
+    - uses: astral-sh/setup-uv@v6
+      if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
+      with:
         enable-cache: true
     - name: Install package (uv)
       if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
       shell: bash
       run: |
-        uv venv --seed .venv
+        uv venv --seed --python "$(which python)" .venv
         echo "VIRTUAL_ENV=$PWD/.venv" >> "$GITHUB_ENV"
         echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
         uv pip install '.[test,docs]' pytest pytest-cov black flake8 codecov pydata-sphinx-theme sphinx-design sphinx-copybutton sphinxnotes-strike sphinx-rtd-theme rinohtype pystemmer pygments
