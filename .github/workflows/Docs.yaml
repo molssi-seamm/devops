@@ -5,7 +5,7 @@ on:
 
 jobs:
   docs:
-    name: Docs ubuntu-latest Py3.11
+    name: Docs ubuntu-latest Py3.12
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -18,8 +18,13 @@ jobs:
         uname -a
         df -h
         ulimit -a
-    # More info on options: https://github.com/conda-incubator/setup-miniconda
+    # Two environment paths, chosen by whether the package still ships a
+    # conda CI environment file. Packages without one are installed with uv
+    # WITH their dependencies, so install_requires is what gets tested.
+    #
+    # --- conda path (legacy) ---------------------------------------------
     - uses: conda-incubator/setup-miniconda@v4
+      if: hashFiles('devtools/conda-envs/test_env.yaml') != ''
       with:
         python-version: "3.12"
         environment-file: devtools/conda-envs/test_env.yaml
@@ -27,12 +32,28 @@ jobs:
         auto-update-conda: false
         auto-activate-base: false
         show-channel-urls: true
-    - name: Install package
+    - name: Install package (conda)
+      if: hashFiles('devtools/conda-envs/test_env.yaml') != ''
       # conda setup requires this special shell
       shell: bash -l {0}
       run: |
         python -m pip install . --no-deps
         conda list
+    # --- uv path -----------------------------------------------------------
+    - uses: astral-sh/setup-uv@v6
+      if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
+      with:
+        python-version: "3.12"
+        enable-cache: true
+    - name: Install package (uv)
+      if: hashFiles('devtools/conda-envs/test_env.yaml') == ''
+      shell: bash
+      run: |
+        uv venv --seed .venv
+        echo "VIRTUAL_ENV=$PWD/.venv" >> "$GITHUB_ENV"
+        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+        uv pip install '.[test,docs]' pytest pytest-cov black flake8 codecov pydata-sphinx-theme sphinx-design sphinx-copybutton sphinxnotes-strike sphinx-rtd-theme rinohtype pystemmer pygments
+        uv pip list
     - name: Build documentation
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
