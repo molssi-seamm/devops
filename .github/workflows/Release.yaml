@@ -12,6 +12,13 @@ on:
         type: string
         required: false
         default: tests
+      python-versions:
+        description: >-
+          JSON list of the Python versions to test, e.g. '["3.12"]' for a
+          package whose python_requires excludes 3.11.
+        type: string
+        required: false
+        default: '["3.11", "3.12"]'
 
 jobs:
   lint-docs:
@@ -89,7 +96,7 @@ jobs:
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ${{ fromJSON(inputs.python-versions) }}
     steps:
     - uses: actions/checkout@v5
     - name: Additional info about the build
