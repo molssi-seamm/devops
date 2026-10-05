@@ -85,6 +85,11 @@ jobs:
     - name: Deploy documentation
       uses: peaceiris/actions-gh-pages@v4
       # if: github.ref == 'refs/heads/main'
+      # Never block the PyPI publish: the package's own Docs workflow pushes
+      # gh-pages for the merge to main (and make update's push to dev) at the
+      # same moment, and a rejected push here used to skip PyPI
+      # (properties_step 2026.10.5, twice). Those pushes publish the docs anyway.
+      continue-on-error: true
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_build/html
