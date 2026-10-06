@@ -83,6 +83,7 @@ jobs:
       run: |
         make html
     - name: Deploy documentation
+      id: deploy
       uses: peaceiris/actions-gh-pages@v4
       # if: github.ref == 'refs/heads/main'
       # Never block the PyPI publish: the package's own Docs workflow pushes
@@ -93,6 +94,11 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_build/html
+    - name: Report a failed documentation deploy
+      if: steps.deploy.outcome == 'failure'
+      run: |
+        echo "::warning::The documentation deploy to gh-pages failed; the package's Docs workflow usually publishes it for the same commit. Check the gh-pages branch if the docs look stale."
+        echo "⚠️ The documentation deploy to gh-pages failed (the release itself is not affected)." >> "$GITHUB_STEP_SUMMARY"
 
   test:
     name: Test ${{ matrix.os }} Py${{ matrix.python-version }}
@@ -165,8 +171,10 @@ jobs:
 
   deploy:
     name: PyPi ubuntu-latest Py3.12
-    # Run only for tagged releases publishing development or release candidates
-    # only to test.pypi, otherwise to both it and the main pypi.
+    # Run only for tagged releases: development versions and release candidates
+    # go only to test.pypi, other releases only to the main pypi (a test.pypi
+    # outage must not block a release; the same files go to both, and twine check
+    # runs before every release).
     if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     needs: [lint-docs, test]
@@ -189,6 +197,7 @@ jobs:
         python -m build --sdist --wheel --outdir dist/
         ls -l dist/
     - name: Publish distribution 📦 to Test PyPI
+      if: contains(github.ref, 'dev') || contains(github.ref, 'rc')
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.test_pypi_password }}
