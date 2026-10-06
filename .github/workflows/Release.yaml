@@ -83,6 +83,7 @@ jobs:
       run: |
         make html
     - name: Deploy documentation
+      id: deploy
       uses: peaceiris/actions-gh-pages@v4
       # if: github.ref == 'refs/heads/main'
       # Never block the PyPI publish: the package's own Docs workflow pushes
@@ -93,6 +94,11 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_build/html
+    - name: Report a failed documentation deploy
+      if: steps.deploy.outcome == 'failure'
+      run: |
+        echo "::warning::The documentation deploy to gh-pages failed; the package's Docs workflow usually publishes it for the same commit. Check the gh-pages branch if the docs look stale."
+        echo "⚠️ The documentation deploy to gh-pages failed (the release itself is not affected)." >> "$GITHUB_STEP_SUMMARY"
 
   test:
     name: Test ${{ matrix.os }} Py${{ matrix.python-version }}
