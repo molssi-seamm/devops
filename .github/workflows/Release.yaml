@@ -14,11 +14,13 @@ on:
         default: tests
       python-versions:
         description: >-
-          JSON list of the Python versions to test, e.g. '["3.12"]' for a
-          package whose python_requires excludes 3.11.
+          JSON list of the Python versions to test. SEAMM is Python 3.12 only:
+          seamm-manager requires 3.12 and builds every installation's venv with
+          it, so 3.11 is not tested by default (2026-10-06). A package may pass
+          more, e.g. '["3.12", "3.13"]'.
         type: string
         required: false
-        default: '["3.11", "3.12"]'
+        default: '["3.12"]'
 
 jobs:
   lint-docs:
